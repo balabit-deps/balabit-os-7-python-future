@@ -1,0 +1,71 @@
+From 6e3c0d5f332a2f591c36d477e5c254849b7d40f5 Mon Sep 17 00:00:00 2001
+From: Vincent Bernat <bernat@debian.org>
+Date: Tue, 3 May 2016 21:51:13 +0200
+Subject: Do not ship a configparser module
+
+This module is already backported in python-configparser package.
+
+Bug-Debian: https://bugs.debian.org/822157
+Bug: https://github.com/PythonCharmers/python-future/issues/118
+
+Patch-Name: remove-configparser-module.patch
+---
+ setup.py                                   |  2 --
+ src/configparser/__init__.py               | 13 -------------
+ tests/test_future/test_standard_library.py |  3 ---
+ 3 files changed, 18 deletions(-)
+ delete mode 100644 src/configparser/__init__.py
+
+diff --git a/setup.py b/setup.py
+index 7c81a09..1b2380c 100755
+--- a/setup.py
++++ b/setup.py
+@@ -58,7 +58,6 @@ PACKAGES = ["future",
+ if sys.version_info[:2] < (3, 0):
+     PACKAGES += [
+             "builtins",
+-            "configparser",
+             "copyreg",
+             "html",
+             "http",
+@@ -134,7 +133,6 @@ try:
+                           '_markupbase',
+                           '_thread',
+                           'builtins',
+-                          'configparser',
+                           'copyreg',
+                           'html',
+                           'http',
+diff --git a/src/configparser/__init__.py b/src/configparser/__init__.py
+deleted file mode 100644
+index 3642c5e..0000000
+--- a/src/configparser/__init__.py
++++ /dev/null
+@@ -1,13 +0,0 @@
+-from __future__ import absolute_import
+-import sys
+-
+-if sys.version_info[0] < 3:
+-    from ConfigParser import *
+-    try:
+-        from ConfigParser import (_Chainmap, Error, InterpolationMissingOptionError)
+-    except ImportError:
+-        pass
+-else:
+-    raise ImportError('This package should not be accessible on Python 3. '
+-                      'Either you are trying to run from the python-future src folder '
+-                      'or your installation of python-future is corrupted.')
+diff --git a/tests/test_future/test_standard_library.py b/tests/test_future/test_standard_library.py
+index 399d587..62b40a2 100644
+--- a/tests/test_future/test_standard_library.py
++++ b/tests/test_future/test_standard_library.py
+@@ -271,9 +271,6 @@ class TestStandardLibraryReorganization(CodeHandler):
+         with self.assertRaises(CalledProcessError):
+             output = self._run_test_script('importme1.py')
+ 
+-    def test_configparser(self):
+-        import configparser
+-    
+     def test_copyreg(self):
+         import copyreg
+ 

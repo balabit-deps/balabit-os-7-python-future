@@ -1,0 +1,55 @@
+From 0bcd681b0a83d8a6500def6b594aec3cb07d5a47 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ond=C5=99ej=20Nov=C3=BD?= <onovy@debian.org>
+Date: Fri, 23 Sep 2016 13:52:43 +0200
+Subject: Fixed bytes unit tests fail on Python 3.5
+
+Forwarded: https://github.com/PythonCharmers/python-future/pull/243
+---
+ tests/test_future/test_bytes.py | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/tests/test_future/test_bytes.py b/tests/test_future/test_bytes.py
+index f30e740..7413e1f 100644
+--- a/tests/test_future/test_bytes.py
++++ b/tests/test_future/test_bytes.py
+@@ -7,6 +7,8 @@ from __future__ import absolute_import, unicode_literals, print_function
+ from future.builtins import *
+ from future import utils
+ 
++import sys
++
+ from numbers import Integral
+ from future.tests.base import unittest, expectedFailurePY2
+ 
+@@ -534,13 +536,14 @@ class TestBytes(unittest.TestCase):
+         self.assertRaises(ValueError, bytes.maketrans, b'abc', b'xyzq')
+         self.assertRaises(TypeError, bytes.maketrans, 'abc', 'def')
+ 
+-    @unittest.expectedFailure
+     def test_mod(self):
+         """
+         From Py3.5 test suite (post-PEP 461).
+ 
+         The bytes mod code is in _PyBytes_Format() in bytesobject.c in Py3.5.
+         """
++        if sys.version_info[:2] < (3, 5):
++            raise unittest.SkipTest('bytes % not yet implemented on Py < 3.5')
+         b = b'hello, %b!'
+         orig = b
+         b = b % b'world'
+@@ -551,13 +554,12 @@ class TestBytes(unittest.TestCase):
+         a = b % (b'seventy-nine', 79)
+         self.assertEqual(a, b'seventy-nine / 100 = 79%')
+ 
+-    @unittest.expectedFailure
+     def test_imod(self):
+         """
+         From Py3.5 test suite (post-PEP 461)
+         """
+-        # if (3, 0) <= sys.version_info[:2] < (3, 5):
+-        #     raise unittest.SkipTest('bytes % not yet implemented on Py3.0-3.4')
++        if sys.version_info[:2] < (3, 5):
++            raise unittest.SkipTest('bytes % not yet implemented on Py < 3.5')
+         b = bytes(b'hello, %b!')
+         orig = b
+         b %= b'world'

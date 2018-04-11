@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=future
+export PYBUILD_TEST_ARGS=-k 'not urllib and not test_remove_hooks_then_requests and not test_requests_cm'
+export PYBUILD_BEFORE_TEST=cp pasteurize.py futurize.py {build_dir}
+export PYBUILD_AFTER_TEST=rm {build_dir}/*.py
+
+%:
+	dh $@ --buildsystem=pybuild --with python2,python3,sphinxdoc
+
+override_dh_install:
+	dh_install
+	mv debian/python-future/usr/bin/futurize debian/python-future/usr/bin/python2-futurize
+	mv debian/python3-future/usr/bin/futurize debian/python3-future/usr/bin/python3-futurize
+	mv debian/python-future/usr/bin/pasteurize debian/python-future/usr/bin/python2-pasteurize
+	mv debian/python3-future/usr/bin/pasteurize debian/python3-future/usr/bin/python3-pasteurize
+
+override_dh_sphinxdoc:
+	http_proxy=http://127.0.0.1:9 \
+	https_proxy=https://127.0.0.1:9 \
+	PYTHONPATH=.:./src sphinx-build -b html docs debian/python-future-doc/usr/share/doc/python-future-doc/html
+	dh_sphinxdoc

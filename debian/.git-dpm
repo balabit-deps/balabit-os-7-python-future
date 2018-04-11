@@ -1,0 +1,11 @@
+# see git-dpm(1) from git-dpm package
+0bcd681b0a83d8a6500def6b594aec3cb07d5a47
+0bcd681b0a83d8a6500def6b594aec3cb07d5a47
+a221055395c07bbd060ef683775843da55465485
+a221055395c07bbd060ef683775843da55465485
+python-future_0.15.2.orig.tar.gz
+431bf8ff160e8e785a2f76c3e57c1b6c2b13b41a
+1583441
+debianTag="debian/%e%v"
+patchedTag="patched/%e%v"
+upstreamTag="upstream/%e%u"
